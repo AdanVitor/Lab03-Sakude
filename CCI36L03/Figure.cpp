@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "PolyFill.h"
+#include "SceneGraph.h"
 
-
-class Figure{
-public:
-	Figure(){}
-	bool wasSelected(point_type point){}
-
-};
+Figure::Figure(){}
+bool Figure::selected(point_type point){ return false; }
