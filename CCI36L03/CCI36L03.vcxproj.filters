@@ -9,9 +9,14 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Polygon">
+      <UniqueIdentifier>{485b3bda-8b97-46eb-bdb7-9d97923990b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Segment">
+      <UniqueIdentifier>{78beb1bb-f148-470a-970c-6f8ba396dad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Figure">
+      <UniqueIdentifier>{2ff7331f-af08-4c77-905f-acdce0905970}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,24 +35,21 @@
     <ClInclude Include="PolyFill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Figure.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SceneGraph.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Figure.h">
+      <Filter>Figure</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CCI36L03.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Figure.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Figure</Filter>
     </ClCompile>
-    <ClCompile Include="SceneGraph.cpp">
+    <ClCompile Include="CCI36L03.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
