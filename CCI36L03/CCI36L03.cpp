@@ -84,7 +84,7 @@ static COLORREF color_trans_map[] =
 /*******************************************************************
                        Function Prototypes
 ************************************************************************/
-HMENU menu, menu_draw, menu_pattern;
+HMENU menu, menu_draw, menu_pattern , menu_actions;
 void menuBar();
 void DrawXorPixel(int x, int y);
 
@@ -742,52 +742,8 @@ void chooseDraw(int chosenDraw, int chosenPattern, int p0_x, int p0_y, int p1_x,
 	}
 }
 
-/*Function that create the menu used in the application*/
-void menuBar(){
-	menu = CreateMenu();
-	menu_draw = CreatePopupMenu();
-	menu_pattern = CreatePopupMenu();
-	// Creating the sub menus
-	// Menu Draw: responsável pela escolha do desenho
-	/*The XorLine, DDA Line, Bresenham Line desenham uma linha, a diferença é só o algoritmo implementado*/
-	AppendMenu(menu, MF_POPUP, (UINT)menu_draw, (LPCTSTR)L"&Fill");
-	InsertMenu(menu_draw, 0, MF_STRING, 41, (LPCTSTR)L"&Fill Polygon");
-	AppendMenu(menu_draw, MF_STRING, 42, (LPCTSTR)L"&Fill Polygon Recursive");
-	AppendMenu(menu_draw, MF_STRING, 43, (LPCTSTR)L"&Circle");
-	/* Menu Pattern: responsável pela escolha do padrão
-	- Sem padrão
-	- Tracejado
-	- Tracejado Pontilhado
-	- Pontilhado*/
-	AppendMenu(menu, MF_POPUP, (UINT)menu_pattern,(LPCTSTR)L"&Pattern");
-	InsertMenu(menu_pattern, 0, MF_STRING, 1, (LPCTSTR)L"Sem Padrao");
-	AppendMenu(menu_pattern, MF_STRING, 2, (LPCTSTR)L"Linhas Verticais Crescimento Exponencial");
-	AppendMenu(menu_pattern, MF_STRING, 3, (LPCTSTR)L"Linhas Verticais  Alternadas Crescimento Exponencial");
-	AppendMenu(menu_pattern, MF_STRING, 4, (LPCTSTR)L"Linhas Verticais  Pequeno Espaçamento Crescimento Exponencial");
-	AppendMenu(menu_pattern, MF_STRING, 5, (LPCTSTR)L"Multiplicativo Pequeno");
-	AppendMenu(menu_pattern, MF_STRING, 6, (LPCTSTR)L"Multiplicativo Grande");
-	AppendMenu(menu_pattern, MF_STRING, 7, (LPCTSTR)L"Pontilhado");
-	AppendMenu(menu_pattern, MF_STRING, 8, (LPCTSTR)L"Quadrados Fundo Preto");
-	AppendMenu(menu_pattern, MF_STRING, 9, (LPCTSTR)L"Quadrados e Tracejados Fundo Preto");
-	AppendMenu(menu_pattern, MF_STRING, 11, (LPCTSTR)L"Quadrados Fundo Azul");
-	AppendMenu(menu_pattern, MF_STRING, 12, (LPCTSTR)L"Janelas Fundo Verde");
-	AppendMenu(menu_pattern, MF_STRING, 14, (LPCTSTR)L"Xadrez");
-	AppendMenu(menu_pattern, MF_STRING, 15, (LPCTSTR)L"Mosaico");
-	AppendMenu(menu_pattern, MF_STRING, 17, (LPCTSTR)L"Ruído Rosa Forte");
-	AppendMenu(menu_pattern, MF_STRING, 18, (LPCTSTR)L"Ruído Amarelo Moderado");
-	AppendMenu(menu_pattern, MF_STRING, 19, (LPCTSTR)L"Ruído Branco Forte");
-	AppendMenu(menu_pattern, MF_STRING, 20, (LPCTSTR)L"Malha Senoidal Linha Grossa");
-	AppendMenu(menu_pattern, MF_STRING, 21, (LPCTSTR)L"Malha Senoidal");
-	AppendMenu(menu_pattern, MF_STRING, 22, (LPCTSTR)L"Malha Senoidal Linha Fina");
-	AppendMenu(menu_pattern, MF_STRING, 23, (LPCTSTR)L"Pseudo Fractal I");
-	AppendMenu(menu_pattern, MF_STRING, 24, (LPCTSTR)L"Onda Superfície");
-	AppendMenu(menu_pattern, MF_STRING, 25, (LPCTSTR)L"Pseudo Fractal II");
-	AppendMenu(menu_pattern, MF_STRING, 26, (LPCTSTR)L"Psicodélico I");
-	AppendMenu(menu_pattern, MF_STRING, 27, (LPCTSTR)L"Psicodélico II");
-	AppendMenu(menu_pattern, MF_STRING, 28, (LPCTSTR)L"Psicodélico III");
-	/*Fornece a opção de limpar a tela*/
-	InsertMenu(menu, 0, MF_STRING, 39, (LPCTSTR)L"&Erase Draw");
-}
+
+
 
 
 /*Função que limpa a tela - ela é chamada quando se aperta o botão Erase Draw*/
@@ -835,6 +791,9 @@ void PolyInsert(edge_list_type &list, int x1, int y1, int x2, int y2) { // inser
 		list.n++;
 	}
 }
+
+
+
 
 void LoadPolygon(polygon_type &polygon, edge_list_type &list, int &num_Edges) {
 	int x1,x2,y1,y2,k=0;
@@ -1069,10 +1028,314 @@ void Circle(int x, int y) {
 	FloodFillRec(x,y);
 }
 
+
+/*Function that create the menu used in the application*/
+void menuBar(){
+	menu = CreateMenu();
+	menu_draw = CreatePopupMenu();
+	menu_pattern = CreatePopupMenu();
+	menu_actions = CreatePopupMenu();
+	/*Menu para para vários tipos de ação, como por exemplo, selecionar uma aresta*/
+	AppendMenu(menu, MF_POPUP, (UINT)menu_actions, (LPCTSTR)L"&Actions");
+	InsertMenu(menu_actions, 0, MF_STRING, 51, (LPCTSTR)L"&Select Edge");
+
+	// Creating the sub menus
+	// Menu Draw: responsável pela escolha do desenho
+	/*The XorLine, DDA Line, Bresenham Line desenham uma linha, a diferença é só o algoritmo implementado*/
+	AppendMenu(menu, MF_POPUP, (UINT)menu_draw, (LPCTSTR)L"&Fill");
+	InsertMenu(menu_draw, 0, MF_STRING, 41, (LPCTSTR)L"&Fill Polygon");
+	AppendMenu(menu_draw, MF_STRING, 42, (LPCTSTR)L"&Fill Polygon Recursive");
+	AppendMenu(menu_draw, MF_STRING, 43, (LPCTSTR)L"&Circle");
+	/* Menu Pattern: responsável pela escolha do padrão
+	- Sem padrão
+	- Tracejado
+	- Tracejado Pontilhado
+	- Pontilhado*/
+	AppendMenu(menu, MF_POPUP, (UINT)menu_pattern, (LPCTSTR)L"&Pattern");
+	InsertMenu(menu_pattern, 0, MF_STRING, 1, (LPCTSTR)L"Sem Padrao");
+	AppendMenu(menu_pattern, MF_STRING, 2, (LPCTSTR)L"Linhas Verticais Crescimento Exponencial");
+	AppendMenu(menu_pattern, MF_STRING, 3, (LPCTSTR)L"Linhas Verticais  Alternadas Crescimento Exponencial");
+	AppendMenu(menu_pattern, MF_STRING, 4, (LPCTSTR)L"Linhas Verticais  Pequeno Espaçamento Crescimento Exponencial");
+	AppendMenu(menu_pattern, MF_STRING, 5, (LPCTSTR)L"Multiplicativo Pequeno");
+	AppendMenu(menu_pattern, MF_STRING, 6, (LPCTSTR)L"Multiplicativo Grande");
+	AppendMenu(menu_pattern, MF_STRING, 7, (LPCTSTR)L"Pontilhado");
+	AppendMenu(menu_pattern, MF_STRING, 8, (LPCTSTR)L"Quadrados Fundo Preto");
+	AppendMenu(menu_pattern, MF_STRING, 9, (LPCTSTR)L"Quadrados e Tracejados Fundo Preto");
+	AppendMenu(menu_pattern, MF_STRING, 11, (LPCTSTR)L"Quadrados Fundo Azul");
+	AppendMenu(menu_pattern, MF_STRING, 12, (LPCTSTR)L"Janelas Fundo Verde");
+	AppendMenu(menu_pattern, MF_STRING, 14, (LPCTSTR)L"Xadrez");
+	AppendMenu(menu_pattern, MF_STRING, 15, (LPCTSTR)L"Mosaico");
+	AppendMenu(menu_pattern, MF_STRING, 17, (LPCTSTR)L"Ruído Rosa Forte");
+	AppendMenu(menu_pattern, MF_STRING, 18, (LPCTSTR)L"Ruído Amarelo Moderado");
+	AppendMenu(menu_pattern, MF_STRING, 19, (LPCTSTR)L"Ruído Branco Forte");
+	AppendMenu(menu_pattern, MF_STRING, 20, (LPCTSTR)L"Malha Senoidal Linha Grossa");
+	AppendMenu(menu_pattern, MF_STRING, 21, (LPCTSTR)L"Malha Senoidal");
+	AppendMenu(menu_pattern, MF_STRING, 22, (LPCTSTR)L"Malha Senoidal Linha Fina");
+	AppendMenu(menu_pattern, MF_STRING, 23, (LPCTSTR)L"Pseudo Fractal I");
+	AppendMenu(menu_pattern, MF_STRING, 24, (LPCTSTR)L"Onda Superfície");
+	AppendMenu(menu_pattern, MF_STRING, 25, (LPCTSTR)L"Pseudo Fractal II");
+	AppendMenu(menu_pattern, MF_STRING, 26, (LPCTSTR)L"Psicodélico I");
+	AppendMenu(menu_pattern, MF_STRING, 27, (LPCTSTR)L"Psicodélico II");
+	AppendMenu(menu_pattern, MF_STRING, 28, (LPCTSTR)L"Psicodélico III");
+	/*Fornece a opção de limpar a tela*/
+	InsertMenu(menu, 0, MF_STRING, 39, (LPCTSTR)L"&Erase Draw");
+}
+
+
+/*Declaração de algumas classes */
+
+
+
+
+
+class Point{
+public:
+	int x, y;
+
+public:
+	void setPoint(int x, int y){
+		this->x = x;
+		this->y = y;
+	}
+
+	int getX(){
+		return x;
+	}
+	int getY(){
+		return y;
+	}
+
+};
+
+
+class Edge{
+public:
+	Point point1, point2;
+public:
+	void getPoints(Point* p1, Point* p2){
+		p1 = &point1;
+		p2 = &point2;
+	}
+
+	void setFirstPoint(Point initialPoint){
+		point1 = initialPoint;
+	}
+	void setSecondPoint(Point finalPoint){
+		point2 = finalPoint;
+	}
+
+	Point getFirstPoint(){
+		return point1;
+	}
+
+	Point getSecondPoint(){
+		return point2;
+	}
+};
+
+struct Vertex{
+	Point point;
+	Vertex* prox;
+};
+
+struct EdgeNode{
+	Edge edge;
+	EdgeNode* prox;
+};
+
+
+
+
+class Figure {
+public:
+	Vertex* start;
+	EdgeNode* edgeStart;
+	bool isSelected = false;
+	Figure(){
+		start = NULL;
+		edgeStart = NULL;
+	}
+	void addVertex(int x, int y){
+		Point point;
+		point.setPoint(x, y);
+		Vertex* p;
+		p = (Vertex*)malloc(sizeof(Vertex));
+		p->point = point;
+		p->prox = start;
+		start = p;
+	}
+	void printVertex(){
+		Vertex* p = start;
+		int count = 0;
+		while (p != NULL){
+			printf(" point: %d %d", (p->point).getX(), (p->point).getY());
+			count++;
+			p = p->prox;
+		}
+		printf(" Numero de pontos: %d ", count);
+	}
+
+	void finishPolygon(){
+		addEdges();
+
+	}
+
+	void addEdges(){
+		Vertex* p = start;
+		Edge* previousEdge = NULL;
+		Edge* nextEdge = NULL;
+		int count = 0;
+		while (p != NULL){
+			if (count % 2 == 0){
+				if(p->prox != NULL){
+					previousEdge = new Edge();
+					(*previousEdge).setFirstPoint(p->point);
+				}
+				if (nextEdge != NULL){
+					(*nextEdge).setSecondPoint(p->point);
+					addNode(nextEdge);
+				}
+			}
+			else{
+				if (p->prox != NULL){
+					nextEdge = new Edge();
+					(*nextEdge).setFirstPoint(p->point);
+				}
+				(*previousEdge).setSecondPoint(p->point);
+				addNode(previousEdge);
+			}
+			p = p->prox;
+			count++;
+		}
+	}
+
+	void addNode(Edge* newEdge){
+		EdgeNode* edge = (EdgeNode*)malloc(sizeof(EdgeNode));
+		edge->edge = (*newEdge);
+		edge->prox = edgeStart;
+		edgeStart = edge;
+	}
+	void printEdges()  {
+		EdgeNode* aux = edgeStart;
+		while (aux != NULL){
+			Edge edge = aux->edge;
+			Point point1 = edge.getFirstPoint();
+			Point point2 = edge.getSecondPoint();
+			printf("Edge: %d  %d , %d %d\n", point1.getX(), point1.getY(), point2.getX(), point2.getY());
+			aux = aux->prox;
+		}
+	}
+
+	bool isNear(int x, int y){
+		EdgeNode* aux = edgeStart;
+		while (aux != NULL){
+			Edge edge = aux->edge;
+			Point p1 = edge.getFirstPoint();
+			Point p2 = edge.getSecondPoint();
+			double p1x = p1.getX();
+			double p1y = p1.getY();
+			double p2x = p2.getX();
+			double p2y = p2.getY();
+
+
+			float d = 10;
+			float dist2, xmin, ymin, xmax, ymax;
+
+			
+
+			xmin = Min(p1x, p1x); ymin = Min(p1y, p2y); xmax = Max(p1x, p2x); ymax = Max(p1y, p2y);
+			dist2 = pow((x - p1x)*(p2y - p1y) - (y - p1y)*(p2x - p1x), 2) / (pow(p2x - p1x,2) + pow(p2y - p1y,2));
+
+			printf("distancia: %f", dist2);
+
+			if ((dist2 <= d*d) && (xmin - d <= x) && (x <= xmax + d) && (ymin - d <= y) && (y <= ymax + d)){
+				return true;
+			}
+			aux = aux->prox;
+		}
+		return false;
+	}
+
+	void pick(){
+		if (!isSelected){
+			EdgeNode* aux = edgeStart;
+			while (aux != NULL){
+				Edge edge = aux->edge;
+				Point point1 = edge.getFirstPoint();
+				Point point2 = edge.getSecondPoint();
+				printf("Edge: %d  %d , %d %d\n", point1.getX(), point1.getY(), point2.getX(), point2.getY());
+				SetGraphicsColor((int)MY_LIGHTGREEN, 1);
+				DrawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), pattern3, 8);
+				aux = aux->prox;
+			}
+			isSelected = true;
+		}
+	}
+
+
+};
+
+struct FigureNode{
+	Figure* figure;
+	FigureNode* prox;
+};
+
+
+class ScreenFigures{
+public:
+	FigureNode* start;
+	ScreenFigures(){
+		start = NULL;
+	}
+	void addFigure(Figure* figure){
+		FigureNode* node;
+		node = (FigureNode*)malloc(sizeof(FigureNode));
+		node->figure = figure;
+		node->prox = start;
+		start = node;
+	}
+
+	int getFiguresNumber(){
+		int counter = 0;
+		FigureNode* aux = start;
+		while (aux != NULL){
+			counter++;
+			aux = aux->prox;
+		}
+		return counter;
+	}
+
+	void printEdges(){
+		FigureNode* aux = start;
+		while (aux != NULL){
+			printf("poligono:\n");
+			(*(aux->figure)).printEdges();
+			aux = aux->prox;
+		}
+	}
+
+	void pickFigure(int mouseX, int mouseY){
+		FigureNode* aux = start;
+		while (aux != NULL){
+			if ((*aux->figure).isNear(mouseX, mouseY)){
+				(*aux->figure).pick();
+			}
+			else{
+				printf("false");
+			}
+			aux = aux->prox;
+		}
+	}
+
+};
+
+
+
+
+
 /*Função principal: implementa o efeito elástico, tanto nas linhas, quanto na circunferência*/
 void main()
 {
-	
 	SetGraphicsColor(15, 1);
 	//int p0_x, p0_y, p1_x, p1_y, cor, color = MY_MAGENTA;
 
@@ -1081,17 +1344,27 @@ void main()
 	polygon.n = 0;
 	edge_list_type list;
 	int p0_x, p0_y, p1_x,p1_y, x_1,y_1, x_2,y_2,xc,yc; 
+	bool isAction = false;
+	bool pressed = false;
 
 	int chosenAlgorithm = 1;
 	InitGraphics();
 
+	ScreenFigures screenFigures;
 
+	Figure* savepoly;
 
 	while (key_input != ESC) {	// ESC exits the program
+		
 		CheckGraphicsMsg();
 		if (hasEvent){
-			if (menu_item >= 40){
+			isAction = false;
+			if (menu_item >= 50){
+				isAction = true;
+			}
+			else if (menu_item >= 40){
 				chosenAlgorithm = menu_item - 40;
+
 			}
 			else if (menu_item < 39){
 					chosenPatternFill = menu_item;
@@ -1103,74 +1376,112 @@ void main()
 		}
 		patternFill = pattern0;
 		patternSizeFill = 4;
-
-		if (mouse_action==L_MOUSE_DOWN) {  // Pick first point up
-			if (polygon.n==0) {   
-				p0_x=p1_x=mouse_x;
-				p0_y=p1_y=mouse_y;
-				if(chosenAlgorithm != 3) InsertVertex(polygon,p0_x,p0_y);
-				else { 
-					xc = mouse_x;
-					yc = mouse_y;
+		
+		if (!isAction){
+			if (mouse_action == L_MOUSE_DOWN) {  // Pick first point up
+				if (polygon.n == 0) {
+					p0_x = p1_x = mouse_x;
+					p0_y = p1_y = mouse_y;
+					if (chosenAlgorithm != 3) {
+						savepoly = new Figure();
+						screenFigures.addFigure(savepoly);
+						InsertVertex(polygon, p0_x, p0_y);
+						(*savepoly).addVertex(p0_x, p0_y);
+					}
+					else {
+						xc = mouse_x;
+						yc = mouse_y;
+					}
 				}
+			}
+			if (mouse_action == L_MOUSE_MOVE_DOWN) {  // Example of elastic line
+				if (chosenAlgorithm != 3) {
+					if (p1_x != mouse_x || p1_y != mouse_y) {  // Erase previous line. NOTE: using XOR line
+						BresenhamLine(p0_x, p0_y, p1_x, p1_y, pattern, 4);
+						p1_x = mouse_x;
+						p1_y = mouse_y;  // Draw new line
+						BresenhamLine(p0_x, p0_y, p1_x, p1_y, pattern, 4);
+						x_1 = p0_x;
+						y_1 = p0_y;
+						x_2 = p1_x;
+						y_2 = p1_y;
+					}
+				}
+				else {
+					if (p1_x != mouse_x || p1_y != mouse_y)  	// test if x or y changed
+					{
+						// Erase previous line.
+						chooseDraw(4, 1, p0_x, p0_y, p1_x, p1_y);
+						p1_x = mouse_x; p1_y = mouse_y;
+						chooseDraw(4, 1, p0_x, p0_y, p1_x, p1_y);
+						//mouse_action=NO_ACTION;
+					}
+				}
+			}
+			else if (mouse_action == L_MOUSE_UP) {//  SetGraphicsColor((int)MY_LIGHTGREEN);
+				//DrawLine(p0_x,p0_y,p1_x,p1_y,pattern,4);
+				p0_x = p1_x = mouse_x;
+				p0_y = p1_y = mouse_y;
+				if (chosenAlgorithm != 3) {
+					if (polygon.n > 0 &&
+						(polygon.vertex[polygon.n - 1].x != p0_x
+						|| polygon.vertex[polygon.n - 1].y != p0_y)){
+
+						InsertVertex(polygon, p0_x, p0_y);
+						(*savepoly).addVertex(p0_x, p0_y);
+					}
+
+				}
+				else {
+					double dx = xc - p1_x;
+					double dy = yc - p1_y;
+					double radio = sqrt(pow(dx, 2) + pow(dy, 2));
+					double radioproj = radio*sqrt(2.0) / 2;
+					DrawPixel(xc + Arred((int)radio), yc);
+					DrawPixel(xc - Arred((int)radio), yc);
+					DrawPixel(xc, yc + Arred((int)radio));
+					DrawPixel(xc, yc - Arred((int)radio));
+					DrawPixel(xc + Arred((int)radioproj), yc + Arred((int)radioproj));
+					DrawPixel(xc + Arred((int)radioproj), yc - Arred((int)radioproj));
+					DrawPixel(xc - Arred((int)radioproj), yc + Arred((int)radioproj));
+					DrawPixel(xc - Arred((int)radioproj), yc - Arred((int)radioproj));
+				}
+
+				mouse_action = NO_ACTION;
+			}
+			else if (mouse_action == R_MOUSE_DOWN) {
+				if (chosenAlgorithm != 3) {
+					DrawPoly(polygon);
+					InsertVertex(polygon, polygon.vertex[0].x, polygon.vertex[0].y);
+					(*savepoly).addVertex(polygon.vertex[0].x, polygon.vertex[0].y);
+					(*savepoly).finishPolygon();
+					(*savepoly).printVertex();
+					(*savepoly).printEdges();
+					
+					/*if (chosenAlgorithm == 1)   FillPolygon(polygon, list);
+					else if (chosenAlgorithm == 2)	FloodFillRecursive(polygon); */
+				}
+				else Circle(mouse_x, mouse_y);
+				mouse_action = NO_ACTION;
+				polygon.n = 0;
+
 			}
 		}
-		if (mouse_action==L_MOUSE_MOVE_DOWN) {  // Example of elastic line
-			if(chosenAlgorithm != 3) {
-				if (p1_x!=mouse_x || p1_y!=mouse_y) {  // Erase previous line. NOTE: using XOR line
-					BresenhamLine(p0_x,p0_y,p1_x,p1_y,pattern,4);
-					p1_x=mouse_x;
-					p1_y=mouse_y;  // Draw new line
-					BresenhamLine(p0_x,p0_y,p1_x,p1_y,pattern,4);
-					x_1=p0_x;
-					y_1=p0_y;
-					x_2=p1_x;
-					y_2=p1_y;
-				}	 
-			} else {
-				if (p1_x != mouse_x || p1_y != mouse_y)  	// test if x or y changed
-				{
-					// Erase previous line.
-					chooseDraw(4, 1,p0_x, p0_y, p1_x, p1_y);
-					p1_x = mouse_x; p1_y = mouse_y;
-					chooseDraw(4, 1, p0_x, p0_y, p1_x, p1_y);
-					//mouse_action=NO_ACTION;
+		else{
+			if (menu_item == 51){
+				if (mouse_action == L_MOUSE_DOWN) {  // Pick first point up
+					pressed = true;
+				}
+				if (mouse_action == L_MOUSE_UP && pressed){
+					pressed = false;
+					printf("numero de figuras: %d\n", screenFigures.getFiguresNumber());
+					screenFigures.printEdges();
+					p0_x = mouse_x;
+					p0_y = mouse_y;
+					printf("p0x: %d , p0y: %d\n", p0_x, p0_y);
+					screenFigures.pickFigure(p0_x , p0_y);
 				}
 			}
-		} else if(mouse_action==L_MOUSE_UP) {//  SetGraphicsColor((int)MY_LIGHTGREEN);
-			//DrawLine(p0_x,p0_y,p1_x,p1_y,pattern,4);
-			p0_x=p1_x=mouse_x;
-			p0_y=p1_y=mouse_y;
-			if(chosenAlgorithm != 3) {
-				if (polygon.n>0 && 
-				( polygon.vertex[polygon.n-1].x!=p0_x
-				||polygon.vertex[polygon.n-1].y!=p0_y))	InsertVertex(polygon,p0_x,p0_y);
-			} else {
-				double dx = xc - p1_x;
-				double dy = yc - p1_y;
-				double radio = sqrt(pow(dx, 2)+pow(dy, 2));
-				double radioproj = radio*sqrt(2.0)/2;
-				DrawPixel(xc+Arred((int)radio),yc);
-				DrawPixel(xc-Arred((int)radio),yc);
-				DrawPixel(xc,yc+Arred((int)radio));
-				DrawPixel(xc,yc-Arred((int)radio));
-				DrawPixel(xc+Arred((int)radioproj),yc+Arred((int)radioproj));
-				DrawPixel(xc+Arred((int)radioproj),yc-Arred((int)radioproj));
-				DrawPixel(xc-Arred((int)radioproj),yc+Arred((int)radioproj));
-				DrawPixel(xc-Arred((int)radioproj),yc-Arred((int)radioproj));
-			}
-
-			mouse_action=NO_ACTION;
-		} else if(mouse_action==R_MOUSE_DOWN) {
-			if(chosenAlgorithm != 3) {
-				DrawPoly(polygon);
-				InsertVertex(polygon,polygon.vertex[0].x,polygon.vertex[0].y);
-				if (chosenAlgorithm == 1)   FillPolygon(polygon, list);
-				else if(chosenAlgorithm==2)	FloodFillRecursive(polygon);
-			}
-			else Circle(mouse_x,mouse_y);
-			mouse_action=NO_ACTION;
-			polygon.n=0;
 		}
 
 		

@@ -38,16 +38,10 @@
     <ClInclude Include="SceneGraph.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Figure.h">
-      <Filter>Figure</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Figure.cpp">
-      <Filter>Figure</Filter>
     </ClCompile>
     <ClCompile Include="CCI36L03.cpp">
       <Filter>Source Files</Filter>

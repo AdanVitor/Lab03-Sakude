@@ -79,7 +79,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Figure.h" />
     <ClInclude Include="grafbase.h" />
     <ClInclude Include="PolyFill.h" />
     <ClInclude Include="SceneGraph.h" />
@@ -88,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CCI36L03.cpp" />
-    <ClCompile Include="Figure.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
