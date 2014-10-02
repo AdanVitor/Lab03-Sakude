@@ -37,7 +37,7 @@ static BOOL graphics = TRUE;                /* Boolean, enable graphics?  */
 int pattern0[] = { 1, 1, 1, 1 }; // sem padrão.
 int pattern1[] = { 1, 1, 1, 1, 0, 0, 0, 0 }; // tracejado.
 int pattern2[] = { 1, 1, 1, 1, 0, 0, 0 , 0 , 1 , 0 , 0 , 0 , 0}; // traço ponto.
-int pattern3[] = { 1, 0, 1, 0, 1, 0, 1, 0 }; // pontilhado.
+int pattern3[] = { 0, 1, 0, 0, 0, 0, 1, 0 }; // pontilhado.
 int patternSizeFill;
 int *patternFill;
 int chosenPatternFill = 1;
@@ -557,6 +557,8 @@ void BresenhamLine(int x0, int y0, int x1, int y1 , int pattern[] ,int patternSi
 
 }
 
+
+
 /*Essa função desenha os oito pontos simétricos da circunferência: ela recebe como parâmetros
 os pontos do centro da circunferência: xc, yc
 os pontos do primeiro octante: x , y
@@ -698,6 +700,57 @@ void DrawXorLine(int x1, int y1, int x2, int y2 ,int pattern[], int patternSize)
 	}
 }
 
+
+void EraseLine(int x0, int y0, int x1, int y1){
+	SetGraphicsColor(255, 1);
+	int x = x0;
+	int y = y0;
+	int dx = abs(x1 - x0);
+	int dy = abs(y1 - y0);
+	int incx, incy;
+	int d, incrE, incrNE;
+
+	incx = ((x0 > x1) ? -1 : (x0 < x1) ? 1 : 0);
+	incy = ((y0 > y1) ? -1 : (y0 < y1) ? 1 : 0);
+
+	if (dx > dy){  // inclinacao menor que 45 graus
+		d = 2 * dy - dx;
+		incrE = 2 * dy;
+		incrNE = 2 * (dy - dx);
+		for (int i = 0; i < dx; i++){
+			
+			DrawPixel(x, y);
+			
+
+			if (d <= 0){
+				d += incrE;
+			}
+			else{
+				d += incrNE;
+				y += incy;
+			}
+			x += incx;
+		}
+	}
+	else{
+		d = 2 * dx - dy; //inclinação maior que 45 graus
+		incrE = 2 * dx;
+		incrNE = 2 * (dx - dy);
+		for (int i = 0; i < dy; i++){
+			
+			DrawPixel(x, y);
+			if (d <= 0){
+				d += incrE;
+			}
+			else{
+				d += incrNE;
+				x += incx;
+			}
+			y += incy;
+		}
+	}
+
+}
 
 
 
@@ -950,6 +1003,8 @@ void FillIn ( int x1 , int x2 , int y ) {
 	} 
 }
 
+
+
 void FillScan (edge_list_type &list, int end_Edge , int start_Edge , int scan ) {
 	int NX , J , K;
 	NX = (end_Edge - start_Edge + 1)/2;
@@ -1037,8 +1092,8 @@ void menuBar(){
 	menu_actions = CreatePopupMenu();
 	/*Menu para para vários tipos de ação, como por exemplo, selecionar uma aresta*/
 	AppendMenu(menu, MF_POPUP, (UINT)menu_actions, (LPCTSTR)L"&Actions");
-	InsertMenu(menu_actions, 0, MF_STRING, 51, (LPCTSTR)L"&Select Edge");
-
+	InsertMenu(menu_actions, 0, MF_STRING, 51, (LPCTSTR)L"&Select and Unselect polygon by a edge");
+	InsertMenu(menu_actions, 0, MF_STRING, 52, (LPCTSTR)L"&Erase selected polygon");
 	// Creating the sub menus
 	// Menu Draw: responsável pela escolha do desenho
 	/*The XorLine, DDA Line, Bresenham Line desenham uma linha, a diferença é só o algoritmo implementado*/
@@ -1145,16 +1200,24 @@ struct EdgeNode{
 
 
 
-
+/*Classe responsável por guardar cada polígono - POR ENQUANTO SÓ TÁ GUARDANDO POLÍGONO NÃO ARESTA E CIRCUNFERENCIA*/
 class Figure {
 public:
 	Vertex* start;
 	EdgeNode* edgeStart;
 	bool isSelected = false;
+
+	bool selected(){
+		return isSelected;
+	}
+
 	Figure(){
 		start = NULL;
 		edgeStart = NULL;
 	}
+
+	
+
 	void addVertex(int x, int y){
 		Point point;
 		point.setPoint(x, y);
@@ -1209,6 +1272,7 @@ public:
 		}
 	}
 
+
 	void addNode(Edge* newEdge){
 		EdgeNode* edge = (EdgeNode*)malloc(sizeof(EdgeNode));
 		edge->edge = (*newEdge);
@@ -1225,7 +1289,7 @@ public:
 			aux = aux->prox;
 		}
 	}
-
+	/*função que indica se alguma aresta desse polígono está próximo do ponto x e y */
 	bool isNear(int x, int y){
 		EdgeNode* aux = edgeStart;
 		while (aux != NULL){
@@ -1237,16 +1301,13 @@ public:
 			double p2x = p2.getX();
 			double p2y = p2.getY();
 
-
-			float d = 10;
+			float d = 5;
 			float dist2, xmin, ymin, xmax, ymax;
 
-			
-
-			xmin = Min(p1x, p1x); ymin = Min(p1y, p2y); xmax = Max(p1x, p2x); ymax = Max(p1y, p2y);
+			xmin = Min(p1x, p2x); ymin = Min(p1y, p2y); xmax = Max(p1x, p2x); ymax = Max(p1y, p2y);
 			dist2 = pow((x - p1x)*(p2y - p1y) - (y - p1y)*(p2x - p1x), 2) / (pow(p2x - p1x,2) + pow(p2y - p1y,2));
 
-			printf("distancia: %f", dist2);
+			printf(" distancia: %f", dist2);
 
 			if ((dist2 <= d*d) && (xmin - d <= x) && (x <= xmax + d) && (ymin - d <= y) && (y <= ymax + d)){
 				return true;
@@ -1257,19 +1318,47 @@ public:
 	}
 
 	void pick(){
+		redrawFigure(false);
+	}
+
+
+	void redrawFigure(bool eraseFigure){
+		int* erasePattern;
+		int  eraseLength;
+		int* newSelectPattern;
+		int  newLength;
 		if (!isSelected){
-			EdgeNode* aux = edgeStart;
-			while (aux != NULL){
-				Edge edge = aux->edge;
-				Point point1 = edge.getFirstPoint();
-				Point point2 = edge.getSecondPoint();
-				printf("Edge: %d  %d , %d %d\n", point1.getX(), point1.getY(), point2.getX(), point2.getY());
-				SetGraphicsColor((int)MY_LIGHTGREEN, 1);
-				DrawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), pattern3, 8);
-				aux = aux->prox;
-			}
+			erasePattern = pattern0;
+			eraseLength = 4;
+			newSelectPattern = pattern3;
+			newLength = 8;
 			isSelected = true;
 		}
+		else{
+			isSelected = false;
+			erasePattern = pattern3;
+			eraseLength = 8;
+			newSelectPattern = pattern0;
+			newLength = 4;
+		}
+		EdgeNode* aux = edgeStart;
+		while (aux != NULL){
+			Edge edge = aux->edge;
+			Point point1 = edge.getFirstPoint();
+			Point point2 = edge.getSecondPoint();
+			DrawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), erasePattern, eraseLength);
+			if (!eraseFigure){
+				DrawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), newSelectPattern, newLength); /*desenhando a nova linha*/
+			}
+			else{
+				EraseLine(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+			}
+			aux = aux->prox;
+		}
+	}
+
+	void eraseFigure(){
+		redrawFigure(true);
 	}
 
 
@@ -1280,7 +1369,7 @@ struct FigureNode{
 	FigureNode* prox;
 };
 
-
+/*Classe responsável por guardar as figuras*/
 class ScreenFigures{
 public:
 	FigureNode* start;
@@ -1327,8 +1416,20 @@ public:
 		}
 	}
 
-};
+	void eraseSelectedPolygonals(){
+		FigureNode* aux = start;
+		FigureNode* previous = start;
+		while (aux != NULL){
+			if ((*aux->figure).selected()){
+				printf("chamou a função");
+				(*aux->figure).eraseFigure();
+			}
+			previous = aux;
+			aux = aux->prox;
+		}
+	}
 
+};
 
 
 
@@ -1351,7 +1452,6 @@ void main()
 	InitGraphics();
 
 	ScreenFigures screenFigures;
-
 	Figure* savepoly;
 
 	while (key_input != ESC) {	// ESC exits the program
@@ -1359,7 +1459,10 @@ void main()
 		CheckGraphicsMsg();
 		if (hasEvent){
 			isAction = false;
-			if (menu_item >= 50){
+			if (menu_item == 52){
+				screenFigures.eraseSelectedPolygonals();
+			}
+			else if (menu_item >= 50){
 				isAction = true;
 			}
 			else if (menu_item >= 40){
@@ -1475,7 +1578,7 @@ void main()
 				if (mouse_action == L_MOUSE_UP && pressed){
 					pressed = false;
 					printf("numero de figuras: %d\n", screenFigures.getFiguresNumber());
-					screenFigures.printEdges();
+					/*screenFigures.printEdges();*/
 					p0_x = mouse_x;
 					p0_y = mouse_y;
 					printf("p0x: %d , p0y: %d\n", p0_x, p0_y);
