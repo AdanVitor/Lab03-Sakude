@@ -1351,6 +1351,8 @@ public:
 				DrawLine(point1.getX(), point1.getY(), point2.getX(), point2.getY(), newSelectPattern, newLength); /*desenhando a nova linha*/
 			}
 			else{
+				/*ESSA FUNÇÃO ERASE LINE NÃO TÁ DANDO CERTO, NÃO SEI PORQUE - A IDÉIA QUE EU TIVE ERA SETAR A COR PRA PRETO
+				E DESENHAR A LINHA NÃO SEI POR QUE NÃO TÁ DANDO CERTO*/
 				EraseLine(point1.getX(), point1.getY(), point2.getX(), point2.getY());
 			}
 			aux = aux->prox;
@@ -1424,6 +1426,9 @@ public:
 				printf("chamou a função");
 				(*aux->figure).eraseFigure();
 			}
+			/*
+			FALTA TIRAR O POLIÍGONO DA FILA 
+			*/
 			previous = aux;
 			aux = aux->prox;
 		}
